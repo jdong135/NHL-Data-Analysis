@@ -1,8 +1,6 @@
 import requests
 import json
 
-# https://gitlab.com/dword4/nhlapi/-/blob/master/stats-api.md
-
 parameters = {
     "stats": "yearByYear"
     # Crosby: 8471675
