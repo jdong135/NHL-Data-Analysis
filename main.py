@@ -1,3 +1,7 @@
 import player_ids
-import pandas as pd
+import player
 
+
+kane = player.Player("Tomas Tatar")
+kane.populate_career_stats()
+kane.graph_career_goals()
