@@ -61,6 +61,13 @@ class Player:
                         self.seasons.append(season_abbrev)
 
     def graph_career_goals(self):
+        """
+        Params: none
+        Returns: none
+        Plots goals scored vs. season
+        """
+        if not self.seasons:
+            self.populate_career_stats()
         career_goals = []
         for season in self.career_stats.keys():
             goals = self.career_stats[season]['goals']
@@ -71,3 +78,15 @@ class Player:
         plt.ylabel('Goals Scored')
         plt.show()
 
+    def get_stat_names(self):
+        """
+        Params: none
+        Returns: (list) of stat names measured for this player
+        Uses the first season the player was in, in case more metrics are
+        tracked in later seasons
+        """
+        if not self.seasons:
+            self.populate_career_stats()
+        first_season = list(self.career_stats.keys())[0]
+        first_season_stats = self.career_stats[first_season]
+        return list(first_season_stats.keys())
