@@ -24,7 +24,7 @@ class Player:
         Populates player's stats in a dictionary in the form of
             {season number: {dictionary of stats}}.
         This method only considers NHL stats. If a player played for multiple
-        teams during a season, it accumualtes the totals across teams.
+        teams during a season, it accumulates the totals across teams.
         """
         url = f'https://statsapi.web.nhl.com/api/v1/people/{self.id}/stats?stats=yearByYear'
         response = requests.get(url).json()
@@ -60,11 +60,10 @@ class Player:
                     if season_abbrev not in self.seasons:
                         self.seasons.append(season_abbrev)
 
-    def graph_career_goals(self):
+    def get_career_goals(self):
         """
         Params: none
-        Returns: none
-        Plots goals scored vs. season
+        Returns: (list) goals for each season
         """
         if not self.seasons:
             self.populate_career_stats()
@@ -72,7 +71,17 @@ class Player:
         for season in self.career_stats.keys():
             goals = self.career_stats[season]['goals']
             career_goals.append(goals)
-        plt.plot(self.seasons, career_goals)
+        return career_goals
+
+    def graph_career_goals(self):
+        """
+        Params: none
+        Returns: none
+        Plots goals scored vs. season
+        """
+        career_goals = self.get_career_goals()
+        plt.figure(figsize=(10, 6))
+        plt.plot(self.seasons, career_goals, marker='o')
         plt.title('Season vs. Goals')
         plt.xlabel('Season')
         plt.ylabel('Goals Scored')
