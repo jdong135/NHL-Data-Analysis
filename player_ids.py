@@ -24,7 +24,7 @@ def update_id_map():
         cur_date = datetime.date.today()
         time_since_update = cur_date - last_updated_date
         if time_since_update.days > 14:
-            print('It has been more than 14 days')
+            print('It has been more than 14 days since id_map has been updated')
             populate_id_map()
     else:
         populate_id_map()
