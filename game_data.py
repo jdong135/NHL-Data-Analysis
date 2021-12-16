@@ -40,7 +40,7 @@ def get_non_playoff_game_data(season, game_type):
     game_data = []
     # Continue iterating until we go past max games
     while True:
-    # for i in range(0, 5):
+    # for i in range(50, 70):
         ID = str(season) + game_type + str(game_num).zfill(4)
         url = 'https://statsapi.web.nhl.com/api/v1/game/{}/feed/live'.format(ID)
         response = requests.get(url).json()
