@@ -40,3 +40,10 @@ def draw_points(x, y):
         rink.add_patch(circle)
     plt.show()
 
+def line_graph(x, y, title, x_label, y_label):
+    plt.figure(figsize=(10, 6))
+    plt.plot(x, y, marker='o')
+    plt.title(title)
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+    plt.show()

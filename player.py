@@ -6,7 +6,7 @@ Contains career stats and methods to graph these stats
 import player_ids
 import requests
 import matplotlib.pyplot as plt
-import game_data
+import api
 import canvas
 
 class Player:
@@ -26,42 +26,12 @@ class Player:
         Returns: none
         Populates player's stats in a dictionary in the form of
             {season number: {dictionary of stats}}.
+        Populates player's seasons in NHL as list ['10-'11, '11-'12, ...].
         This method only considers NHL stats. If a player played for multiple
         teams during a season, it accumulates the totals across teams.
         """
-        url = f'https://statsapi.web.nhl.com/api/v1/people/{self.id}/stats?stats=yearByYear'
-        response = requests.get(url).json()
-        season_stats = response['stats'][0]['splits']
-        for stat in season_stats:
-            if stat['league']['name'] == 'National Hockey League':
-                season = stat['season']
-                # There may be repeat seasons because players get traded,
-                # accumulate statistics if so
-                if season in self.career_stats.keys():
-                    for key, value in stat['stat'].items():
-                        # Handle adding times together
-                        if ':' in str(value):
-                            cur_time = self.career_stats[season][key].split(':')
-                            cur_seconds = int(cur_time[1])
-                            cur_mins = int(cur_time[0])
-                            delta_time = value.split(':')
-                            delta_seconds = int(delta_time[1])
-                            delta_mins = int(delta_time[0])
-                            new_seconds = cur_seconds + delta_seconds
-                            if new_seconds >= 60:
-                                new_minutes = cur_mins + delta_mins + 1
-                                new_seconds -= 60
-                            else:
-                                new_minutes = cur_mins + delta_mins
-                            self.career_stats[season][key] = f'{str(new_minutes)}:{str(new_seconds)}'
-                        else:
-                            self.career_stats[season][key] += value
-                else:
-                    stats = stat['stat']
-                    self.career_stats[season] = stats
-                    season_abbrev = f'\'{season[2:4]}-\'{season[-2:]}'
-                    if season_abbrev not in self.seasons:
-                        self.seasons.append(season_abbrev)
+        self.career_stats = api.get_career_statistics(self.id)
+        self.seasons = api.get_career_seasons(self.id)
 
     def get_career_goals(self):
         """
@@ -80,15 +50,10 @@ class Player:
         """
         Params: none
         Returns: none
-        Plots goals scored vs. season
+        Plots season vs. goals scored
         """
         career_goals = self.get_career_goals()
-        plt.figure(figsize=(10, 6))
-        plt.plot(self.seasons, career_goals, marker='o')
-        plt.title('Season vs. Goals')
-        plt.xlabel('Season')
-        plt.ylabel('Goals Scored')
-        plt.show()
+        canvas.line_graph(self.seasons, career_goals, 'Season vs. Goals', 'Season', 'Goals Scored')
 
     def get_stat_names(self):
         """
@@ -110,7 +75,7 @@ class Player:
         Returns: none
         Plots player's goals in given season
         """
-        df = game_data.get_non_playoff_game_data(season, season_type)
+        df = api.get_non_playoff_goal_coords(season, season_type)
         player_df = df[df.iloc[:,0] == self.name]
         canvas.draw_points(player_df.iloc[:,1].values.tolist(), player_df.iloc[:,2].values.tolist())
 

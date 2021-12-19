@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 player_ids.update_id_map()
 kane = player.Player("Patrick Kane")
 kane.draw_goals(2018, '02')
-# kane.graph_career_goals()
 
 
 
