@@ -26,11 +26,17 @@ def draw_rink():
     rink.imshow(photo)
     return rink
 
-def draw_points(points):
+def draw_points(x, y):
+    """
+    Params: (list) x, (list) y of x and y coordinates
+    Returns: none
+
+    Plots points on canvas with half rink backdrop
+    """
     rink = draw_rink()
-    for _, row in points.iterrows():
+    for i in range(len(x)):
         # Need to add 15 to y coordinate to offset the black rink wall
-        circle = plt.Circle((row["Goal_X"] * X_SCALE, row["Goal_Y"] * Y_SCALE + 15), 5, color='b')
+        circle = plt.Circle((x[i] * X_SCALE, y[i] * Y_SCALE + 15), 5, color='black')
         rink.add_patch(circle)
     plt.show()
 

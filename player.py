@@ -6,9 +6,12 @@ Contains career stats and methods to graph these stats
 import player_ids
 import requests
 import matplotlib.pyplot as plt
+import game_data
+import canvas
 
 class Player:
     def __init__(self, name):
+        self.name = name
         self.id = player_ids.get_player_id(name)
         if self.id == -1:
             raise ValueError(f'{name} not found in database')
@@ -99,3 +102,19 @@ class Player:
         first_season = list(self.career_stats.keys())[0]
         first_season_stats = self.career_stats[first_season]
         return list(first_season_stats.keys())
+    
+    # Add in functionality for playoff data
+    def draw_goals(self, season, season_type):
+        """
+        Params: (int) season, (string) season type
+        Returns: none
+        Plots player's goals in given season
+        """
+        df = game_data.get_non_playoff_game_data(season, season_type)
+        player_df = df[df.iloc[:,0] == self.name]
+        canvas.draw_points(player_df.iloc[:,1].values.tolist(), player_df.iloc[:,2].values.tolist())
+
+
+# TODO:
+# Refactor Player class
+# Add in playoff data compatibility
